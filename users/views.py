@@ -11,7 +11,7 @@ from .permissions import AnonPermissions
 from products.models import Cart, Product
 from products.serializer import CartSerializer, ProductSerializer
 import jwt
-from marketplace.settings import SECRET_KEY
+from Finalmarketplace.settings import SECRET_KEY
 from rest_framework_simplejwt import exceptions
 
 
