@@ -1,15 +1,78 @@
+from django.core.mail import send_mail
 from django.http import Http404
 from rest_framework import permissions, status, filters
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
+from rest_framework.utils import json
 from rest_framework.views import APIView
-from .serializer import ProductSerializer, CartSerializer
-from .models import Product, Cart
+from .serializer import ProductSerializer, CartSerializer, OrderSerializer
+from .models import Product, Cart, Order
 from users.permissions import IsVendorPermission, IsOwnerOrReadOnly
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListAPIView
 from rest_framework.parsers import MultiPartParser, FormParser
+import stripe
+from django.conf import settings
+from django.http import JsonResponse
+from django.views import View
+from django.views.generic import TemplateView
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
+
+class SuccessView(TemplateView):
+    template_name = "success.html"
+
+
+class CancelView(TemplateView):
+    template_name = "cancel.html"
+
+
+class ProductLandingPageView(TemplateView):
+    template_name = "landing.html"
+
+    def get_context_data(self, **kwargs):
+        product = Product.objects.get(name="zsd")
+        context = super(ProductLandingPageView, self).get_context_data(**kwargs)
+        context.update({
+            "product": product,
+            "STRIPE_PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY
+        })
+        return context
+
+
+class CreateCheckoutSessionView(View):
+    def post(self, request, *args, **kwargs):
+        product_id = self.kwargs["pk"]
+        product = Product.objects.get(id=product_id)
+        YOUR_DOMAIN = "http://127.0.0.1:8000"
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[
+                {
+                    'price_data': {
+                        'currency': 'usd',
+                        'unit_amount': product.price,
+                        'product_data': {
+                            'name': product.name
+                        },
+                    },
+                    'quantity': 1,
+                },
+            ],
+            metadata={
+                "product_id": product.id
+            },
+            mode='payment',
+            success_url=YOUR_DOMAIN + '/success/',
+            cancel_url=YOUR_DOMAIN + '/cancel/',
+        )
+        return JsonResponse({
+            'id': checkout_session.id
+        })
 
 
 class ProductCreateAPIView(APIView):
@@ -149,3 +212,13 @@ class CartDetailAPIView(APIView):
         data = serializer1.data
         data['product'] = serializer2.data
         return Response(data, status=status.HTTP_200_OK)
+
+    def post(self, request, user_id):
+        serializer = OrderSerializer(data=request.data)
+        product = Cart.product(id=user_id)
+        amount = product.price
+        order = Order.objects.create(
+            total_price=amount
+        )
+        order.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
