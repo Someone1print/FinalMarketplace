@@ -25,11 +25,11 @@ from products.views import (
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
-    path('product/', include('products.urls')),
+    path('products/', include('products.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('cancel/', CancelView.as_view(), name='cancel'),
     path('success/', SuccessView.as_view(), name='success'),
-    path('landing/', ProductLandingPageView.as_view(), name='landing'),
+    path('landing/<int:id>/', ProductLandingPageView.as_view(), name='landing'),
     path('create-checkout-session/<pk>/',
          CreateCheckoutSessionView.as_view(), name='create-checkout-session'),
 

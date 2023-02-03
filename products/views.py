@@ -34,8 +34,16 @@ class CancelView(TemplateView):
 class ProductLandingPageView(TemplateView):
     template_name = "landing.html"
 
-    def get_context_data(self, **kwargs):
-        product = Product.objects.get(name="zsd")
+    def get_object(self, id):
+        try:
+            return Product.objects.get(id=id)
+        except Product.DoesNotExist:
+            raise Http404
+
+    def get_context_data(self, id, **kwargs):
+        product_id = self.get_object(id=id)
+        idiska = product_id.id
+        product = Product.objects.get(id=idiska)
         context = super(ProductLandingPageView, self).get_context_data(**kwargs)
         context.update({
             "product": product,
@@ -213,12 +221,3 @@ class CartDetailAPIView(APIView):
         data['product'] = serializer2.data
         return Response(data, status=status.HTTP_200_OK)
 
-    def post(self, request, user_id):
-        serializer = OrderSerializer(data=request.data)
-        product = Cart.product(id=user_id)
-        amount = product.price
-        order = Order.objects.create(
-            total_price=amount
-        )
-        order.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
