@@ -1,15 +1,13 @@
 from django.http import Http404
-from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.parsers import JSONParser
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializer import VendorSerializer, CustomerSerializer, MyTokenObtainPairSerializer
 from .models import Vendor, Customer
 from rest_framework import permissions, status
 from .permissions import AnonPermissions
-from products.models import Cart, Product
-from products.serializer import CartSerializer, ProductSerializer
+from apps.products import Cart, Product
+from apps.products.serializer import CartSerializer, ProductSerializer
 import jwt
 from Finalmarketplace.settings import SECRET_KEY
 from rest_framework_simplejwt import exceptions

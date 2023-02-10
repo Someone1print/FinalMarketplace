@@ -1,5 +1,5 @@
 from django.db import models
-from users.models import Vendor, Customer
+from apps.users.models import Vendor, Customer
 
 
 class Category(models.Model):

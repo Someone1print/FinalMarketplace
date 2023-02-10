@@ -1,15 +1,10 @@
-from django.core.mail import send_mail
 from django.http import Http404
 from rest_framework import permissions, status, filters
-from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
-from rest_framework.utils import json
 from rest_framework.views import APIView
-from .serializer import ProductSerializer, CartSerializer, OrderSerializer
-from .models import Product, Cart, Order
-from users.permissions import IsVendorPermission, IsOwnerOrReadOnly
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter
+from .serializer import ProductSerializer, CartSerializer
+from .models import Product, Cart
+from apps.users.permissions import IsVendorPermission, IsOwnerOrReadOnly
 from rest_framework.generics import ListAPIView
 from rest_framework.parsers import MultiPartParser, FormParser
 import stripe
@@ -17,8 +12,6 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.views import View
 from django.views.generic import TemplateView
-from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 

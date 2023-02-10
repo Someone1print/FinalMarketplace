@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from products.views import (
+from apps.products.views import (
     CreateCheckoutSessionView,
     SuccessView,
     CancelView,
@@ -24,9 +24,9 @@ from products.views import (
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('users/', include('users.urls')),
-    path('products/', include('products.urls')),
-    path('dashboard/', include('dashboard.urls')),
+    path('users/', include('apps.users.urls')),
+    path('products/', include('apps.products.urls')),
+    path('dashboard/', include('apps.dashboard.urls')),
     path('cancel/', CancelView.as_view(), name='cancel'),
     path('success/', SuccessView.as_view(), name='success'),
     path('landing/<int:id>/', ProductLandingPageView.as_view(), name='landing'),
