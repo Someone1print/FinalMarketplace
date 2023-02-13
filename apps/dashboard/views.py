@@ -7,15 +7,15 @@ from apps.users.models import Customer, Vendor
 
 
 def dashboard_with_pivot(request):
-    return render(request, 'templates/dashboard_with_pivot.html', {})
+    return render(request, 'dashboard_with_pivot.html', {})
 
 
 def dashboard_with_pivot_vendors(request):
-    return render(request, 'templates/dashboard_vendor.html', {})
+    return render(request, 'dashboard_vendor.html', {})
 
 
 def dashboard_with_pivot_customers(request):
-    return render(request, 'templates/dashboard_customer.html', {})
+    return render(request, 'dashboard_customer.html', {})
 
 
 def pivot_data(request):

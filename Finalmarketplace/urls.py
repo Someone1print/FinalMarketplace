@@ -1,6 +1,6 @@
 """Finalmarketplace URL Configuration
 
-The `urlpatterns` list routes URLs to views. For more information please see:
+The urlpatterns list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.1/topics/http/urls/
 Examples:
 Function views
@@ -15,22 +15,35 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.schemas import get_schema_view
+from django.conf import settings
+from django.conf.urls.static import static
+
 from apps.products.views import (
     CreateCheckoutSessionView,
     SuccessView,
     CancelView,
     ProductLandingPageView
 )
+from django.views.generic import TemplateView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('users/', include('apps.users.urls')),
-    path('products/', include('apps.products.urls')),
-    path('dashboard/', include('apps.dashboard.urls')),
+    path('api/users/', include('apps.users.urls')),
+    path('api/products/', include('apps.products.urls')),
+    path('api/dashboard/', include('apps.dashboard.urls')),
     path('cancel/', CancelView.as_view(), name='cancel'),
     path('success/', SuccessView.as_view(), name='success'),
     path('landing/<int:id>/', ProductLandingPageView.as_view(), name='landing'),
     path('create-checkout-session/<pk>/',
          CreateCheckoutSessionView.as_view(), name='create-checkout-session'),
-
+    path('schema_url/', get_schema_view(title='API Schema'), name='schema_url'),
+    path('swagger-ui/', TemplateView.as_view(
+        template_name='swagger-ui.html',
+        extra_context={'schema_url': 'openapi-schema'}
+    ), name='swagger-ui'),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

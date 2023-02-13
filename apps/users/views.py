@@ -6,7 +6,7 @@ from .serializer import VendorSerializer, CustomerSerializer, MyTokenObtainPairS
 from .models import Vendor, Customer
 from rest_framework import permissions, status
 from .permissions import AnonPermissions
-from apps.products import Cart, Product
+from apps.products.models import Cart, Product
 from apps.products.serializer import CartSerializer, ProductSerializer
 import jwt
 from Finalmarketplace.settings import SECRET_KEY
