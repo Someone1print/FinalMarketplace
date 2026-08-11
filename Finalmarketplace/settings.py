@@ -20,15 +20,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-p8t2dq2sg_!&$-b-&i2%9i0*!%wj*ou5@!(hew#6%vj+n2pu4^'
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-dev-only-change-me')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
-STRIPE_PUBLIC_KEY = "pk_test_51MWztKJMznQ80T3T5AsD5yRi1jsuA6EI1HrXMZaPbQJvBkG0nIMjXwGcmJuL05FwoNNpbTXVbrXmmCj724GC9E8M00uBFYZcSY"
-STRIPE_SECRET_KEY = "sk_test_51MWztKJMznQ80T3TNl2NbW0V6GA3hC92F2UTu8e3JXQITyOnRwHdc5FeyvjvEqOC4RxkSlKRt3Mk2RkIczmH89Ux00V7pHgTk1"
+STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY', default='')
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='')
 
 # Application definition
 
@@ -82,16 +82,24 @@ WSGI_APPLICATION = 'Finalmarketplace.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('POSTGRES_DB'),
-        'USER': config('POSTGRES_USER'),
-        'PASSWORD': config('POSTGRES_PASSWORD'),
-        'HOST': config('POSTGRES_HOST'),
-        'PORT': config('POSTGRES_PORT'),
+if config('DB_ENGINE', default='postgresql') == 'sqlite3':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config('POSTGRES_DB'),
+            'USER': config('POSTGRES_USER'),
+            'PASSWORD': config('POSTGRES_PASSWORD'),
+            'HOST': config('POSTGRES_HOST'),
+            'PORT': config('POSTGRES_PORT'),
+        }
+    }
 
 # DATABASES = {
 #     'default': {
