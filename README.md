@@ -1,5 +1,7 @@
 # FinalMarketplace 🛒
 
+[![Django CI](https://github.com/Someone1print/FinalMarketplace/actions/workflows/django.yml/badge.svg)](https://github.com/Someone1print/FinalMarketplace/actions/workflows/django.yml)
+
 Веб-приложение маркетплейса на Django. Проект реализует функционал интернет-магазина: каталог товаров, корзина, оформление заказов и система пользователей.
 
 ---
@@ -124,3 +126,17 @@ Someone1print
 ---
 
 ⭐ Если проект был полезен — поставь звезду!
+
+## Конфигурация
+
+Секреты читаются из `.env` (см. `.env.example`): подключение к PostgreSQL,
+`SECRET_KEY`, ключи Stripe. Файл `.env` не коммитится.
+
+## Тесты
+
+```bash
+DB_ENGINE=sqlite3 python manage.py test apps
+```
+
+Покрывают кастомную модель пользователя (менеджер, нормализация email,
+хэширование пароля), каталог, корзину и заказы. CI — GitHub Actions.
